@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class='mt-5 register_block'>
+        {% comment %} TODO REGISTER {% endcomment %}
+        <div class="nes-container with-title is-centered is-dark">
+            <p class='title'>Please introduce yourself traveler.</p>
+            <form action="{% url 'register' %}" method='post' id='register_form'>
+                {% csrf_token %}
+                <div class="nes-field">
+                    <label for="nickname_field">Your nickname</label>
+                    <input type="text" name='nickname_field' id="nickname_field" class="nes-input">
+                </div>
+                <div class="nes-field">
+                    <label for="subject_select">Subject</label>
+                    <div class="nes-select">
+                        <select required id="subject_select" name='subject_select'>
+                            <option value="" disabled selected hidden>Select...</option>
+                            {% for subject in subjects %}
+                                <option value={{subject.0}}>{{subject.1}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+    
+            </form>
+        </div>
+        <button type='submit' form='register_form' value='Submit'><a class="insert_coin">Insert coin</a></button>
+    </div>
+    <script>
+
+    </script>
+{% endblock content %}

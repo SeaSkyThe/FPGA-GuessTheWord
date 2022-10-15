@@ -1,0 +1,156 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
+* {
+    font-family: 'Silkscreen', cursive;
+    color: white;
+    /* font-family: 'Press Start 2P', cursive; */
+}
+
+body {
+    background-color: #000000;
+    margin: 0;
+}
+
+
+h1,
+h2,
+h3 {
+    font-family: 'Press Start 2P', cursive;
+    margin: 0 auto 0 auto;
+    text-align: left;
+    position: relative;
+    text-shadow: 3px 3px 0px #2038ec;
+    color: #fff;
+    font-weight: 400;
+}
+
+h1 {
+    font-size: 1.7em;
+    width: 260px;
+
+}
+
+.app-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+}
+
+/* HEADER */
+.app-name {
+    margin: 0;
+}
+
+.header-button {
+    background-color: #f5f5f5;
+    border: 1px solid #151515;
+    font-size: 150%;
+    padding: 5px;
+}
+
+
+
+
+
+/* PLAYER RECORD AND PROFILE */
+.player-profile {
+    margin-left: 2%;
+    max-width: 22%;
+    min-width: 22%;
+}
+
+.player-record {
+    margin-right: 2%;
+    max-width: 22%;
+    min-width: 22%;
+}
+
+.game-content {
+    margin-left: 2%;
+    margin-right: 2%;
+    max-width: 50%;
+}
+
+/* FORM */
+label {
+    color: #F4ECFF;
+}
+
+/* REGISTER BLOCK */
+.register_block {
+    margin-top: 7rem !important;
+}
+
+
+.nes-dialog:not([open]) {
+    display: none !important;
+}
+
+.nes-dialog {
+    max-width: 50%;
+}
+
+/* INSERT COIN ANIMATION */
+
+.insert_coin {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 25px;
+    color: #fff;
+    text-align: center;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    letter-spacing: 4px;
+    color: #2038ec;
+    text-shadow: 0 0 5px #3046ec, 0 0 10px #3148f1, 0 0 15px #fff, 0 0 20px #122cf1, 0 0 25px #0016be;
+    -webkit-text-fill-color: #F4ECFF;
+    -webkit-text-stroke-color: #263ffd;
+    -webkit-text-stroke-width: 0;
+    text-decoration: none;
+
+    animation-name: insert_coin_animation;
+    animation-duration: 3s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    -webkit-animation-name: insert_coin_animation;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes insert_coin_animation {
+    0% {
+        opacity: 1.0;
+    }
+
+    50% {
+        opacity: 0.0;
+    }
+
+    100% {
+        opacity: 1.0;
+    }
+}
+
+@keyframes insert_coin_animation {
+    0% {
+        opacity: 1.0;
+    }
+
+    50% {
+        opacity: 0.0;
+    }
+
+    100% {
+        opacity: 1.0;
+    }
+}

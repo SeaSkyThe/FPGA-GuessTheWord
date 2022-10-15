@@ -1,0 +1,112 @@
+{% load static %}
+<html>
+    <title>Guess the Word</title>
+    <head>
+        <!-- IMPORTANDO GOOGLEFONTS -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300;1,400;1,600&family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+        <!-- IMPORTANDO BOOSTSTRAP -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <!-- IMPORTANDO Nes.css  https://nostalgic-css.github.io/NES.css/ -->
+        <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+        <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+        <link href="https://unpkg.com/nes.css/css/nes-core.min.css" rel="stylesheet" />
+        <!-- IMPORTANDO CSS LOCAL -->
+        <link rel="stylesheet" href="{% static 'base.css' %}">
+    </head>
+    <body>
+        <div id='root'>
+            <div class="app-container">
+                {% comment %} HEADER {% endcomment %}
+                <div class="mt-4 mb-5 d-flex align-items-center justify-content-around">
+                    <div class="d-flex">
+                        <!-- Botao how to play -->
+                        <button type="button" class='nes-btn' onclick="document.getElementById('dialog-how-to-play').showModal();">
+                            <img src="https://img.icons8.com/ios-glyphs/30/000000/question-mark.png"/>
+                        </button>
+                        
+                        <button type="button" class="nes-btn" onclick="document.getElementById('dialog-contact-us').showModal();">
+                            <img src="https://img.icons8.com/material-two-tone/30/000000/phone--v1.png"/>
+                        </button>
+                        
+                    </div>
+                    <h1 class="text-center mb-0 app-name">
+                        GUESS THE WORD
+                    </h1>
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class='nes-btn'  onclick="document.getElementById('dialog-stats').showModal();">
+                            <img src="https://img.icons8.com/material-outlined/30/000000/graph.png"/>
+                        </button>
+                        <button type="button" class='nes-btn'  onclick="document.getElementById('dialog-extra').showModal();">
+                            <img src="https://img.icons8.com/windows/30/000000/placeholder-thumbnail-json-1.png"/>
+                        </button>
+                    </div>
+
+                    
+                </div>
+                <div class="mt-3 d-flex">
+                    <div class='player-profile'>
+                        {% block player_profile %}
+                    
+                        {% endblock player_profile %}
+                    </div>
+                    
+                    <div class='game-content'>
+                        {% block content %}
+                    
+                        {% endblock content %}
+                    </div>
+
+                    <div class='player-record'>
+                        {% block player_record %}
+                    
+                        {% endblock player_record %}
+                    </div>
+                
+                
+                </div>
+            </div>
+
+            
+        </div>
+
+    </body>
+
+    <!-- DIALOGS -->
+    <!-- Como jogar -->
+    <dialog class="nes-dialog is-dark is-rounded" id="dialog-how-to-play" style='display:inline;'>
+        <p class="title">How to play</p>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facilis dignissimos dolores perspiciatis, culpa nam eveniet sed dolorem laboriosam, tempora reiciendis explicabo vitae. Quo mollitia ab, dolore iste reiciendis dolor cupiditate!</p>
+        <button class="nes-btn" onclick="document.getElementById('dialog-how-to-play').close();" >Cancel</button>
+        <button class="nes-btn is-primary" onclick="document.getElementById('dialog-how-to-play').close();">Confirm</button>
+    </dialog>
+    
+
+    <!-- Contato -->
+    <dialog class="nes-dialog is-dark is-rounded" id="dialog-contact-us" style='display:inline;'>
+        <p class="title">Contact US</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum necessitatibus cumque quae sit. Inventore exercitationem dolores provident maiores officia obcaecati, repellat enim corporis blanditiis ut, sit totam suscipit ab deleniti.</p>
+        <button class="nes-btn" onclick="document.getElementById('dialog-contact-us').close();" >Cancel</button>
+        <button class="nes-btn is-primary" onclick="document.getElementById('dialog-contact-us').close();">Confirm</button>
+    </dialog>
+
+    <!-- Estatisticas -->
+    <dialog class="nes-dialog is-dark is-rounded" id="dialog-stats" style='display:inline;'>
+        <p class="title">Stats</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum necessitatibus cumque quae sit. Inventore exercitationem dolores provident maiores officia obcaecati, repellat enim corporis blanditiis ut, sit totam suscipit ab deleniti.</p>
+        <button class="nes-btn" onclick="document.getElementById('dialog-stats').close();" >Cancel</button>
+        <button class="nes-btn is-primary" onclick="document.getElementById('dialog-stats').close();">Confirm</button>
+    </dialog>
+
+    <!-- Extra -->
+    <dialog class="nes-dialog is-dark is-rounded" id="dialog-extra" style='display:inline;'>
+        <p class="title">Extra</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum necessitatibus cumque quae sit. Inventore exercitationem dolores provident maiores officia obcaecati, repellat enim corporis blanditiis ut, sit totam suscipit ab deleniti.</p>
+        <button class="nes-btn" onclick="document.getElementById('dialog-extra').close();" >Cancel</button>
+        <button class="nes-btn is-primary" onclick="document.getElementById('dialog-extra').close();">Confirm</button>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+</html>

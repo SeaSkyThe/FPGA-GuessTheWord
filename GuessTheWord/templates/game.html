@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+
+{% block player_profile %}
+    {% if round %}
+        <p>Welcome</p>
+        <h2>{{round.player}}</h2>
+        <p><br>Thanks for playing our game!</p>
+    {% else %}
+        <h3>Player Not Found</h3>
+        <p><br>Please register yourself in the url /game/register and comeback.</p>
+    {% endif %}
+{% endblock player_profile %}
+
+
+{% block content %}
+    {% comment %} TODO GAME {% endcomment %}
+    {% if round %} <!-- SE O REGISTRO OCORRER COM SUCESSO E O ROUND FOI CRIADO MOSTRA O JOGO -->
+        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
+        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
+        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
+        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
+        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
+        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
+        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
+    {% else %}
+        <div class='register_block'>
+            <div class="nes-container with-title is-centered is-dark">
+                <p class='title'>Maybe you are skipping steps fellow player, or an error ocurred.</p>
+                <div class="nes-field">
+                    <label>Please identify yourself first.</label>
+                    <p></p>
+                    <a class="nes-btn" href={% url 'register' %}>Register page</a>
+                </div>
+            </div>
+        </div>
+        
+    {% endif %}    
+    
+
+    <script>
+
+    </script>
+{% endblock content %}
+
+{% block player_record %}
+    {% if round %}
+        <p class='text-right'>Your current score is: </p>
+        <h2 class='text-right'>{{round.score}}</h2>
+        <p class='text-right'><br> Everytime you miss the word, your total score will be divided by 2, so, be careful, avoid blind guesses.</p>
+    {% else %}
+        <h3 class='text-right'>Score Not Found</h3>
+        <p class='text-right'><br>Please register yourself in the url /game/register and comeback.</p>
+    {% endif %}
+{% endblock player_record %}
