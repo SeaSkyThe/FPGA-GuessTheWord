@@ -61,18 +61,21 @@ h1 {
     margin-left: 2%;
     max-width: 22%;
     min-width: 22%;
+    color: #F4ECFF;
 }
 
 .player-record {
     margin-right: 2%;
     max-width: 22%;
     min-width: 22%;
+    color: #F4ECFF;
 }
 
 .game-content {
     margin-left: 2%;
     margin-right: 2%;
     max-width: 50%;
+    color: #F4ECFF;
 }
 
 /* FORM */
