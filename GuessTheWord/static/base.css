@@ -64,6 +64,10 @@ h1 {
     color: #F4ECFF;
 }
 
+.player-profile h2 {
+    text-transform: capitalize;
+}
+
 .player-record {
     margin-right: 2%;
     max-width: 22%;
@@ -155,4 +159,49 @@ label {
     100% {
         opacity: 1.0;
     }
+}
+
+/* GAME BOARD STYLE */
+
+#game {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.play-row {
+    display: flex;
+}
+
+.play-box {
+    border: 2px solid gray;
+    border-radius: 15%;
+    margin: 0.2em;
+    height: 3.5em;
+    width: 3.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+.letter-input {
+    background-color: #3F3F3F;
+}
+
+.letter-input p {
+    font-size: 1.4em;
+    margin-bottom: 0;
+}
+
+.wrong-letter {
+    background-color: #3F0000;
+}
+
+.wrong-pos-letter {
+    background-color: #666600;
+}
+
+.correct-letter {
+    background-color: #003F00;
 }

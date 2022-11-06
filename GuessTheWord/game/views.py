@@ -15,6 +15,7 @@ def register(request):
     elif(request.method == 'POST'):
         # Pega do form o nick e a disciplina
         nickname = request.POST.get('nickname_field')
+        nickname = nickname.title()
         subject = request.POST.get('subject_select')
         
         # Cria um player com aquele nick, ou pega um que ja existe

@@ -16,13 +16,118 @@
 {% block content %}
     {% comment %} TODO GAME {% endcomment %}
     {% if round %} <!-- SE O REGISTRO OCORRER COM SUCESSO E O ROUND FOI CRIADO MOSTRA O JOGO -->
-        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
-        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
-        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
-        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
-        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
-        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
-        <p class="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nostrum debitis, aperiam ipsam omnis placeat voluptates fugiat quia tempora repudiandae voluptatum a, sapiente libero autem repellendus quaerat, magni sed quod!</p>
+        <div id="game">
+
+        </div>
+        <script>
+            // Global Variables
+            var current_guess = 0
+            var current_letter = 0
+            var number_of_guesses = 6
+            var current_word = "python".toUpperCase()
+            var number_of_characters = current_word.length
+            var correct_letter = 0
+
+            // Init board
+            function init(){
+                let play = document.getElementById("game")
+                for(i = 0; i < number_of_guesses; i++){
+                    let each_row = document.createElement("div")
+                    each_row.classList.add("play-row")
+                    for(j = 0; j < number_of_characters; j++){
+                        let box_letter = document.createElement("div")
+                        box_letter.classList.add("play-box")
+                        each_row.appendChild(box_letter)
+                    }
+                    play.appendChild(each_row)
+                }
+            }
+
+            window.onload = (event)=>{
+                init()
+            }
+
+            document.addEventListener("keyup", (e) => {
+                let pressed_key = String(e.key)
+                if(pressed_key == "Backspace"){
+                    delete_letter()
+                    return
+                }
+
+                if(pressed_key == "Enter"){
+                    guess_check()
+                    return
+                }
+
+                let match_key = pressed_key.match(/^[a-z|A-Z]$/)
+                
+                if(match_key > 1 || !match_key){
+                    return
+                }
+                else{
+                    insert_letter(pressed_key)
+                }
+            })
+
+            function delete_letter(){
+                if(current_letter == 0){
+                    return
+                }
+                let row = document.getElementsByClassName("play-row")[current_guess]
+                let box = row.children[current_letter-1]
+                box.textContent = ""
+                box.classList.remove("letter-input")
+                box.classList.add("play-box")
+                current_letter = current_letter - 1
+            }
+
+            function guess_check(){
+                if(current_letter < number_of_characters){
+                    return
+                }
+                guess_word = ""
+                for(i = 0; i < number_of_characters; i++){
+                    let current_row = document.getElementsByClassName("play-row")[current_guess]
+                    let box_letter = current_row.children[i]
+                    let current_letter = box_letter.textContent
+                    current_letter = current_letter.toUpperCase()
+                    guess_word = guess_word + current_letter
+                    
+                    
+                    if(current_letter == current_word[i]){
+                        box_letter.classList.add("correct-letter")
+                        correct_letter = correct_letter + 1
+                    }
+                    else if(current_word.indexOf(current_letter) != -1){
+                        box_letter.classList.add("wrong-pos-letter")
+                    }
+                    else{
+                        box_letter.classList.add("wrong-letter")
+                    }
+                }
+                if(correct_letter == number_of_characters){
+                    current_guess = 7
+                    return
+                }
+                current_guess = current_guess + 1
+                current_letter = 0
+                correct_letter = 0
+            }
+
+            function insert_letter(pressed_key){
+                if(current_letter >= number_of_characters || current_guess == 7){
+                    return
+                }
+                let current_row = document.getElementsByClassName("play-row")[current_guess]
+                let box_letter = current_row.children[current_letter]
+                let paragraph = document.createElement("p")
+                paragraph.textContent = pressed_key
+                box_letter.appendChild(paragraph)
+                box_letter.classList.add("letter-input")
+                current_letter = current_letter + 1
+
+            }
+        </script>
     {% else %}
         <div class='register_block'>
             <div class="nes-container with-title is-centered is-dark">
