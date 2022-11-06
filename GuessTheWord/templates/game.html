@@ -20,6 +20,26 @@
 
         </div>
         <script>
+            // Processando questoes
+            var questions = []
+            var question = {} 
+            var enunciado = ""
+            var resposta = ""
+            var dificuldade = ""
+            var disciplina = ""
+            {% for question in questions %}
+                enunciado = "{{question.tip}}"
+                resposta = "{{question.answer}}"
+                dificuldade = "{{question.difficulty}}"
+                disciplina = "{{question.subject}}"
+                question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina}
+                questions.push(question)
+            {% endfor %}
+            console.log("QUESTIONS: ", question)
+
+            // Score Variables
+            var score = parseInt("{{round.score}}")
+            var score_area
             // Global Variables
             var current_guess = 0
             var current_letter = 0
@@ -30,6 +50,7 @@
 
             // Init board
             function init(){
+                score_area = document.getElementById("player_score")
                 let play = document.getElementById("game")
                 for(i = 0; i < number_of_guesses; i++){
                     let each_row = document.createElement("div")
@@ -42,11 +63,11 @@
                     play.appendChild(each_row)
                 }
             }
-
+            
             window.onload = (event)=>{
                 init()
             }
-
+            
             document.addEventListener("keyup", (e) => {
                 let pressed_key = String(e.key)
                 if(pressed_key == "Backspace"){
@@ -151,7 +172,7 @@
 {% block player_record %}
     {% if round %}
         <p class='text-right'>Your current score is: </p>
-        <h2 class='text-right'>{{round.score}}</h2>
+        <h2 id="player_score" class='text-right'>{{round.score}}</h2>
         <p class='text-right'><br> Everytime you miss the word, your total score will be divided by 2, so, be careful, avoid blind guesses.</p>
     {% else %}
         <h3 class='text-right'>Score Not Found</h3>
