@@ -4,11 +4,6 @@ from .models import subject_choices, Question, Round, Player
 import json
 # Create your views here.
 
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
-
-
 def register(request):
     context = {}
     if (request.method == 'GET'):

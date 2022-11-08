@@ -205,3 +205,9 @@ label {
 .correct-letter {
     background-color: #003F00;
 }
+
+/* ABOUT */
+.about-p {
+    text-align: justify;
+
+}

@@ -3,12 +3,12 @@
 
 {% block player_profile %}
     {% if round %}
-        <p>Welcome</p>
+        <p>Bem vinda(o)!</p>
         <h2>{{round.player}}</h2>
-        <p><br>Thanks for playing our game!</p>
+        <p><br>Obrigado por jogar nosso jogo!</p>
     {% else %}
-        <h3>Player Not Found</h3>
-        <p><br>Please register yourself in the url /game/register and comeback.</p>
+        <h3>Jogador não encontrado</h3>
+        <p><br>Por favor <a href="{% url 'register' %}">registre-se</a> e volte mais tarde.</p>
     {% endif %}
 {% endblock player_profile %}
 
@@ -35,7 +35,7 @@
                 question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina}
                 questions.push(question)
             {% endfor %}
-            console.log("QUESTIONS: ", question)
+            console.log("QUESTIONS: ", questions)
 
             // Score Variables
             var score = parseInt("{{round.score}}")
@@ -152,11 +152,11 @@
     {% else %}
         <div class='register_block'>
             <div class="nes-container with-title is-centered is-dark">
-                <p class='title'>Maybe you are skipping steps fellow player, or an error ocurred.</p>
+                <p class='title'>Talvez você esteja pulando alguns passos querido jogador, ou um erro da nossa parte ocorreu.</p>
                 <div class="nes-field">
-                    <label>Please identify yourself first.</label>
+                    <label>Por favor, indentifique-se antes de jogar</label>
                     <p></p>
-                    <a class="nes-btn" href={% url 'register' %}>Register page</a>
+                    <a class="nes-btn" href={% url 'register' %}>Pagina de registro</a>
                 </div>
             </div>
         </div>
@@ -171,11 +171,11 @@
 
 {% block player_record %}
     {% if round %}
-        <p class='text-right'>Your current score is: </p>
+        <p class='text-right'>Sua pontuação atual é: </p>
         <h2 id="player_score" class='text-right'>{{round.score}}</h2>
-        <p class='text-right'><br> Everytime you miss the word, your total score will be divided by 2, so, be careful, avoid blind guesses.</p>
+        <p class='text-right'><br>Toda vez que você erra a resposta, sua pontuação é dividida por 2, então tome cuidado! Evite chutes.</p>
     {% else %}
-        <h3 class='text-right'>Score Not Found</h3>
-        <p class='text-right'><br>Please register yourself in the url /game/register and comeback.</p>
+        <h3 class='text-right'>Pontuação não encontrada</h3>
+        <p><br>Por favor <a href="{% url 'register' %}">registre-se</a> e volte mais tarde.</p>
     {% endif %}
 {% endblock player_record %}

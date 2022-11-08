@@ -15,10 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
 admin.site.site_header = 'Guess The Word Admin'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('game/', include('game.urls')),
+    path('', include('game.urls')),
 ]
