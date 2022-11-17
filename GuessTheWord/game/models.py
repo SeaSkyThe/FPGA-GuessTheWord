@@ -26,7 +26,7 @@ class Question(models.Model):
 
 
 class Player(models.Model):
-    nickname = models.CharField(max_length=40, verbose_name='Nickname')
+    nickname = models.CharField(max_length=40, verbose_name='Nickname', unique=True)
 
     def __str__(self) -> str:
         return f"{self.nickname}"
@@ -36,6 +36,7 @@ class Round(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     subject = models.CharField(max_length=99, choices=subject_choices)
     score = models.DecimalField(decimal_places=0, max_digits=20, default=256)
+    current_question = models.DecimalField(decimal_places=0, max_digits=4, default=0)
 
     def __str__(self) -> str:
         return f"Round: {self.id} - From: {self.player}"

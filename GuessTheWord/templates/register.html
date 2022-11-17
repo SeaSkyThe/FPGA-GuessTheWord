@@ -1,5 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
+    {% if player_exists %}
+    <dialog open class="nes-dialog is-dark is-rounded" id="dialog-stats" style='display:inline; z-index: 100;'>
+        <h3 class="title">Opa Opa</h3>
+        <br>
+        <p>Um jogador com esse nickname já existe, por acaso é vc?</p>
+        <p>Se não for, por favor escolha um outro nick!</p>
+        <button class="nes-btn is-primary" id="confirm_player" onclick="">Sim sou eu! :D</button>
+        <script>
+            document.getElementById('confirm_player').addEventListener('click', postData("{% url 'register' %}", {'username': '{{username}}', 'subject': '{{subject}}'}))
+            async function postData(url = '', data = {}) {
+            // Default options are marked with *
+            const response = await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data) // body data type must match Content-Type header
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+            }
+
+            postData({% url 'register' %}, { 'nickname': {{nickname}}, 'subject': {{subject}} })
+            .then((data) => {
+                console.log(data); // JSON data parsed by `data.json()` call
+            });
+        </script>
+        <button class="nes-btn" onclick="document.getElementById('dialog-stats').close();">Não sou >:C </button>
+    </dialog>
+    {% endif %}
     <div class='mt-5 register_block'>
         {% comment %} TODO REGISTER {% endcomment %}
         <div class="nes-container with-title is-centered is-dark">

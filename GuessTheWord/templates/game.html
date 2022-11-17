@@ -16,6 +16,9 @@
 {% block content %}
     {% comment %} TODO GAME {% endcomment %}
     {% if round %} <!-- SE O REGISTRO OCORRER COM SUCESSO E O ROUND FOI CRIADO MOSTRA O JOGO -->
+        <div id="div-enunciado" class="align-items-center text-center">
+
+        </div>
         <div id="game">
 
         </div>
@@ -27,16 +30,17 @@
             var resposta = ""
             var dificuldade = ""
             var disciplina = ""
+            var question_id = ""
             {% for question in questions %}
                 enunciado = "{{question.tip}}"
                 resposta = "{{question.answer}}"
                 dificuldade = "{{question.difficulty}}"
                 disciplina = "{{question.subject}}"
-                question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina}
+                question_id = parseInt("{{question.id}}")
+                question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina, "question_id": question_id}
                 questions.push(question)
             {% endfor %}
-            console.log("QUESTIONS: ", questions)
-
+            console.log(questions)
             // Score Variables
             var score = parseInt("{{round.score}}")
             var score_area
@@ -50,8 +54,18 @@
 
             // Init board
             function init(){
+                // Pontuacao do user
                 score_area = document.getElementById("player_score")
+                
+                // Enunciado aparecendo antes da questao
+                enunciado = document.createElement("p")
+                enunciado.textContent = questions[0].tip
+                
                 let play = document.getElementById("game")
+                play.innerHTML = ""
+
+                play.appendChild(enunciado)
+                
                 for(i = 0; i < number_of_guesses; i++){
                     let each_row = document.createElement("div")
                     each_row.classList.add("play-row")
@@ -127,10 +141,14 @@
                     }
                 }
                 if(correct_letter == number_of_characters){
-                    current_guess = 7
-                    return
+                    current_guess = 0
+                    setTimeout(() => {
+                        init();
+                    }, "3000")
                 }
-                current_guess = current_guess + 1
+                else{
+                    current_guess = current_guess + 1
+                }
                 current_letter = 0
                 correct_letter = 0
             }

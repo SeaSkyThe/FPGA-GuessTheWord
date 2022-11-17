@@ -6,8 +6,8 @@ import json
 
 def register(request):
     context = {}
+    context['subjects'] = subject_choices
     if (request.method == 'GET'):
-        context['subjects'] = subject_choices
         return render(request, 'register.html', context=context)
     elif (request.method == 'POST'):
         # Pega do form o nick e a disciplina
@@ -15,8 +15,16 @@ def register(request):
         nickname = nickname.title()
         subject = request.POST.get('subject_select')
 
-        # Cria um player com aquele nick, ou pega um que ja existe
-        player = Player.objects.get_or_create(nickname=nickname)[0]
+        # Verifica se um player já existe com esse nick, se existir, avisa o usuario
+        if(Player.objects.filter(nickname=nickname).exists()):
+            context['player_exists'] = True
+            context['nickname'] = nickname
+            context['subject'] = subject
+            return render(request, 'register.html', context=context)
+        
+        # Se nao, continua
+        context['player_exists'] = False
+        player = Player.objects.create(nickname=nickname)
         # Cria um round, passando o player e a disciplina. (A pontuação automaticamente inicia com 256)
         round = Round.objects.create(player=player, subject=subject)
 
