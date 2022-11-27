@@ -189,6 +189,9 @@
 
 {% block player_record %}
     {% if round %}
+        <p class='text-right'>Questão atual: </p>
+        <h2 id="player_score" class='text-right'>{{round.current_question|add:"1"}}</h2>
+        <br>
         <p class='text-right'>Sua pontuação atual é: </p>
         <h2 id="player_score" class='text-right'>{{round.score}}</h2>
         <p class='text-right'><br>Toda vez que você erra a resposta, sua pontuação é dividida por 2, então tome cuidado! Evite chutes.</p>

@@ -7,9 +7,24 @@ import json
 def register(request):
     context = {}
     context['subjects'] = subject_choices
-    if (request.method == 'GET'):
+
+    if(request.is_ajax()): # Se for uma requisição AJAX (requisição onde o usuário disse que ele é o player em questão)
+        # Usaremos o Nickname e o nome da Disciplina, para pegar de onde o player parou (pegar o round)
+        body = json.loads(request.body)
+        nickname = body['nickname']
+        nickname = nickname.title()
+        subject = body['subject']
+        
+        player = Player.objects.get(nickname=nickname)
+        round = Round.objects.get(player=player, subject=subject)
+        
+        context['round'] = round
+        request.session['round'] = round.id
+        return redirect('play')
+    
+    elif (request.method == 'GET'): # Se for uma GET request, renderiza a pagina de registro
         return render(request, 'register.html', context=context)
-    elif (request.method == 'POST'):
+    elif (request.method == 'POST'): # Se for uma POST, está enviando o form
         # Pega do form o nick e a disciplina
         nickname = request.POST.get('nickname_field')
         nickname = nickname.title()
