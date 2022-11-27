@@ -4,7 +4,7 @@ from .models import Question, Round, Player, PlayerAnswer
 
 
 class QuestionFilter(admin.ModelAdmin):
-    list_display = ["difficulty", "subject", "tip", "answer"]
+    list_display = ["id", "difficulty", "subject", "tip", "answer"]
     list_filter = ["difficulty", "subject"]
 
 

@@ -224,3 +224,17 @@ label {
     text-align: justify;
 
 }
+
+
+/* PREVIOUS AND NEXT QUESTION BUTTONS */
+#next-question-button {
+    right: 10%;
+    top: 50%;
+    position: absolute;
+}
+
+#previous-question-button {
+    left: 10%;
+    top: 50%;
+    position: absolute;
+}

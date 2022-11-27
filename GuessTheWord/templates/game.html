@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 
-
+<!-- ESSE BLOCO É REFERENTE AO LADO ESQUERDO DA TELA, ONDE FICA A MENSAGEM DE BOAS VINDAS-->
 {% block player_profile %}
     {% if round %}
         <p>Bem vinda(o)!</p>
         <h2>{{round.player}}</h2>
         <p><br>Obrigado por jogar nosso jogo!</p>
+
+        <button type="button" class='nes-btn' id="previous-question-button" onclick="">
+            <img style="" src="https://img.icons8.com/ios-filled/30/000000/chevron-left.png"/>
+        </button>
     {% else %}
         <h3>Jogador não encontrado</h3>
         <p><br>Por favor <a href="{% url 'register' %}">registre-se</a> e volte mais tarde.</p>
     {% endif %}
 {% endblock player_profile %}
 
-
+<!-- ESSE BLOCO É A PARTE CENTRAL, O JOGO DE FATO -->
 {% block content %}
     {% comment %} TODO GAME {% endcomment %}
     {% if round %} <!-- SE O REGISTRO OCORRER COM SUCESSO E O ROUND FOI CRIADO MOSTRA O JOGO -->
@@ -23,25 +27,22 @@
 
         </div>
         <script>
-            // Processando questoes
-            var questions = []
+            // Processando questao
             var question = {} 
             var enunciado = ""
             var resposta = ""
             var dificuldade = ""
             var disciplina = ""
             var question_id = ""
-            {% for question in questions %}
+            {% for question in question %} // Aqui é uma lista com apenas uma questão, para facilitar o manuseio da questao via javascript
                 enunciado = "{{question.tip}}"
                 resposta = "{{question.answer}}"
                 dificuldade = "{{question.difficulty}}"
                 disciplina = "{{question.subject}}"
                 question_id = parseInt("{{question.id}}")
                 question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina, "question_id": question_id}
-                questions.push(question)
             {% endfor %}
-            console.log(questions);
-            console.log("{{ player_answers.0.player_answer }}");
+            console.log(question);
             
             // Score Variables
             var score = parseInt("{{round.score}}")
@@ -50,7 +51,7 @@
             var current_guess = 0
             var current_letter = 0
             var number_of_guesses = 6
-            var current_word = "python".toUpperCase()
+            var current_word = resposta.toUpperCase()
             var number_of_characters = current_word.length
             var correct_letter = 0
 
@@ -61,8 +62,9 @@
                 
                 // Enunciado aparecendo antes da questao
                 enunciado = document.createElement("p")
-                enunciado.textContent = questions[0].tip
-                
+                //enunciado.textContent = questions[0].tip
+                enunciado.textContent = question.tip
+
                 let play = document.getElementById("game")
                 play.innerHTML = ""
 
@@ -189,14 +191,57 @@
     </script>
 {% endblock content %}
 
+<!-- ESSE É O BLOCO À DIREITA, ONDE É MOSTRADA A PONTUAÇÃO DO PLAYER -->
 {% block player_record %}
     {% if round %}
-        <p class='text-right'>Questão atual: </p>
-        <h2 id="player_score" class='text-right'>{{round.current_question|add:"1"}}</h2>
+        <p class='text-right' >Questão atual: </p>
+        <h2 id="current_question_text" class='text-right'></h2>
         <br>
         <p class='text-right'>Sua pontuação atual é: </p>
         <h2 id="player_score" class='text-right'>{{round.score}}</h2>
         <p class='text-right'><br>Toda vez que você erra a resposta, sua pontuação é dividida por 2, então tome cuidado! Evite chutes.</p>
+        
+        <button type="button" class='nes-btn' id="next-question-button">
+            <img style="transform: rotate(180deg);" src="https://img.icons8.com/ios-filled/30/000000/chevron-left.png"/>
+        </button>
+
+        <script>
+            current_question_text = document.getElementById("current_question_text");
+            current_question_text.innerHTML = parseInt("{{round.current_question}}");
+            
+            function replaceChar(origString, replaceChar, index){
+                let firstPart = origString.slice(0, index);
+                let lastPart = origString.slice(index + 1);
+                let newString =
+                    firstPart + replaceChar + lastPart;
+                return newString;
+            }
+
+            // TRATAMENTO DO BOTAO QUE EXIBE A QUESTÃO ANTERIOR
+            document.getElementById('previous-question-button').addEventListener('click', previousQuestion);
+            async function previousQuestion(){
+                nextQuestionNumber = parseInt(window.location.href.charAt(window.location.href.length - 2)) - 1;
+                if(nextQuestionNumber < 1){
+                    nextQuestionNumber = nextQuestionNumber + 1
+                }  
+                window.location.assign(replaceChar(window.location.href, nextQuestionNumber, -2));
+
+                // TODO: NAO ESTA ATUALIZANDO CORRETAMENTE O MARCADOR DE  QUESTAO ATUAL
+                current_question_text.innerHTML = nextQuestionNumber;
+            }
+
+            // TRATAMENTO DO BOTAO QUE EXIBE A PROXIMA QUESTÃO
+            document.getElementById('next-question-button').addEventListener('click', nextQuestion);
+            async function nextQuestion(){
+                nextQuestionNumber = parseInt(window.location.href.charAt(window.location.href.length - 2)) + 1;
+                if(nextQuestionNumber > parseInt("{{number_of_questions}}")){
+                    nextQuestionNumber = nextQuestionNumber - 1
+                } 
+                window.location.assign(replaceChar(window.location.href, nextQuestionNumber, -2));
+                current_question_text.innerHTML = nextQuestionNumber;
+
+            }
+        </script>
     {% else %}
         <h3 class='text-right'>Pontuação não encontrada</h3>
         <p><br>Por favor <a href="{% url 'register' %}">registre-se</a> e volte mais tarde.</p>

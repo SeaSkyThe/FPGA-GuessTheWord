@@ -24,7 +24,10 @@ class Question(models.Model):
     def __str__(self) -> str:
         return f"{self.id} - {self.subject} - {self.tip}"
 
-
+    @classmethod
+    def get_total_number_of_questions(cls):
+        return cls.objects.all().count()
+    
 class Player(models.Model):
     nickname = models.CharField(max_length=40, verbose_name='Nickname', unique=True)
 

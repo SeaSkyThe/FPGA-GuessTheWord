@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import subject_choices, Question, Round, Player, PlayerAnswer
 import json
 # Create your views here.
@@ -23,7 +23,7 @@ def register(request):
         context['round'] = round
         context['player_answers'] = player_answers
         request.session['round'] = round.id
-        return redirect('play')
+        return redirect('play/'+str(round.current_question)+'/')
     
     elif (request.method == 'GET'): # Se for uma GET request, renderiza a pagina de registro
         return render(request, 'register.html', context=context)
@@ -48,28 +48,38 @@ def register(request):
 
         context['round'] = round
         request.session['round'] = round.id
-        return redirect('play')
+        return redirect('play/'+str(round.current_question)+'/')
 
 # View for the GAME page
-def play(request):
+def play(request, question_id):
     context = {}
-    if (request.method == 'GET'):
-        if ('round' in request.session):
+    if (request.method == 'GET'): # Se estivermos pedindo a página do jogo
+        if ('round' in request.session): # Se ja existir uma rodada nas variaveis de sessão, usaremos ela, para evitar reiniciar o jogo caso o usuario dê refresh na pagina
+            # Pegamos o round em questao
             try:
                 context['round'] = Round.objects.get(
                     id=request.session['round'])
             except (KeyError, Round.DoesNotExist):
                 context['round'] = None
 
-            context['questions'] = Question.objects.filter(
-                subject=context['round'].subject)
+            # Pegamos a questão que vai ser enviada para o template, através do argumento da URL (play/<int:id>)
+            try:
+                context['question'] = [Question.objects.get(id=question_id,
+                    subject=context['round'].subject)]
+            except: # Caso não seja encontrao uma questão com esse ID, enviamos a primeira questão
+                 return 
+                
             context['player_answers'] = PlayerAnswer.get_all_answers_from_user(round = context['round'])
 
+            context['number_of_questions'] = Question.get_total_number_of_questions()
+            
             return render(request, 'game.html', context=context)
             #del request.session['round']
         else:
             context['round'] = None
-            context['questions'] = []
+            context['question'] = []
+            context['player_answers'] = []
+            context['number_of_questions'] = 0
             return render(request, 'game.html', context=context)
 
     elif (request.method == 'POST'):
