@@ -37,6 +37,20 @@ class Round(models.Model):
     subject = models.CharField(max_length=99, choices=subject_choices)
     score = models.DecimalField(decimal_places=0, max_digits=20, default=256)
     current_question = models.DecimalField(decimal_places=0, max_digits=4, default=0)
+    answered_questions = models.CharField(max_length=500, default='', blank=True)
 
     def __str__(self) -> str:
         return f"Round: {self.id} - From: {self.player}"
+
+    def get_answered_questions(self) -> list:
+        list_of_answered_questions = self.answered_questions.split(' ')
+        if(list_of_answered_questions[0] != ''):
+            list_of_answered_questions = [int(x) for x in list_of_answered_questions]
+            return list_of_answered_questions
+        
+        return []
+
+    def set_answered_questions(self, list_of_answered_questions) -> list:
+        self.answered_questions = ' '.join(str(e) for e in list_of_answered_questions)
+        self.save()
+        return self.answered_questions
