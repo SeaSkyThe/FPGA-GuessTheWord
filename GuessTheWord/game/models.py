@@ -67,3 +67,12 @@ class PlayerAnswer(models.Model):
         except Exception as e:
             print(f"\nErro ao pegar respostas do user: {nickname}.\n")
             return None
+        
+    def is_correct(self):
+        try:
+            question = Question.objects.get(id=self.question_id, subject=self.round.subject)
+            if(question.answer.lower() == self.player_answer.lower()):
+                return True
+            return False
+        except:
+            return False

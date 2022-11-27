@@ -64,6 +64,7 @@ def play(request):
             context['questions'] = Question.objects.filter(
                 subject=context['round'].subject)
             context['player_answers'] = PlayerAnswer.get_all_answers_from_user(round = context['round'])
+
             return render(request, 'game.html', context=context)
             #del request.session['round']
         else:
@@ -75,6 +76,6 @@ def play(request):
         return render(request, 'game.html')
 
 
-# View that controls when the player ANSWER a question (by using all the chances or by getting it right)
+# View that controls when the player ANSWER a question (when the player uses all the chances (WRONG) or by getting it right (RIGHT))
 def answer(request):
     pass
