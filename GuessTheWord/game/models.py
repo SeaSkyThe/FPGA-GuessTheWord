@@ -12,7 +12,7 @@ difficulty_choices = (
     ('hard', 'Hard'),
 )
 
-
+# Question - o nome é descritivo
 class Question(models.Model):
     difficulty = models.CharField(
         max_length=99, choices=difficulty_choices, verbose_name='Dificuldade', default='Easy')
@@ -32,25 +32,38 @@ class Player(models.Model):
         return f"{self.nickname}"
 
 
+# Round - É a sessão do player, uma partida, um round.
 class Round(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     subject = models.CharField(max_length=99, choices=subject_choices)
     score = models.DecimalField(decimal_places=0, max_digits=20, default=256)
     current_question = models.DecimalField(decimal_places=0, max_digits=4, default=0)
-    answered_questions = models.CharField(max_length=500, default='', blank=True)
 
     def __str__(self) -> str:
         return f"Round: {self.id} - From: {self.player}"
 
-    def get_answered_questions(self) -> list:
-        list_of_answered_questions = self.answered_questions.split(' ')
-        if(list_of_answered_questions[0] != ''):
-            list_of_answered_questions = [int(x) for x in list_of_answered_questions]
-            return list_of_answered_questions
-        
-        return []
+    
+# Model que guarda as respostas dos jogadores
+class PlayerAnswer(models.Model): 
+    round = models.ForeignKey(Round, on_delete=models.CASCADE)
+    question_id = models.DecimalField(verbose_name='Question ID', decimal_places=0, max_digits=99)
+    player_answer = models.CharField(max_length=99)
+    
+    class Meta:
+        verbose_name_plural = "Players Answers"
 
-    def set_answered_questions(self, list_of_answered_questions) -> list:
-        self.answered_questions = ' '.join(str(e) for e in list_of_answered_questions)
-        self.save()
-        return self.answered_questions
+    def __str__(self) -> str:
+        return f"Answer \n  Round: {self.round.id} - From: {self.round.player}\n  Question ID: {self.question_id}\n  Player Answer: {self.player_answer}"
+    
+    @classmethod
+    def get_all_answers_from_user(cls, nickname=None, subject=None, round=None):
+        try:
+            if(round == None):
+                player = Player.objects.get(nickname=nickname)
+                round = Round.objects.get(player=player, subject=subject)
+            answers = cls.objects.filter(round=round)
+            #print(f"\n\n{answers}\n\n")
+            return answers
+        except Exception as e:
+            print(f"\nErro ao pegar respostas do user: {nickname}.\n")
+            return None

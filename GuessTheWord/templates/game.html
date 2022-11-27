@@ -14,7 +14,6 @@
 
 
 {% block content %}
-    {% load set_answered_questions %}
     {% comment %} TODO GAME {% endcomment %}
     {% if round %} <!-- SE O REGISTRO OCORRER COM SUCESSO E O ROUND FOI CRIADO MOSTRA O JOGO -->
         <div id="div-enunciado" class="align-items-center text-center">
@@ -41,10 +40,9 @@
                 question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina, "question_id": question_id}
                 questions.push(question)
             {% endfor %}
-            console.log(questions)
-            console.log("{% set_answered_questions round_obj=round list_of_answered_questions='1 2 3'|split_str:' ' %}")
-            console.log('{{round.get_answered_questions}}')
-
+            console.log(questions);
+            console.log("{{ player_answers.0.player_answer }}");
+            
             // Score Variables
             var score = parseInt("{{round.score}}")
             var score_area

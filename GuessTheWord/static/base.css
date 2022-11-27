@@ -54,7 +54,20 @@ h1 {
 
 
 
+#a_title,
+#a_title:hover,
+#a_title:focus,
+#a_title:active {
+    text-decoration: none;
 
+    font-family: 'Press Start 2P', cursive;
+    margin: 0 auto 0 auto;
+    text-align: left;
+    position: relative;
+    text-shadow: 3px 3px 0px #2038ec;
+    color: #fff;
+    font-weight: 400;
+}
 
 /* PLAYER RECORD AND PROFILE */
 .player-profile {

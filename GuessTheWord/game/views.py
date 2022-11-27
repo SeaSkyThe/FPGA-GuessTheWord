@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import subject_choices, Question, Round, Player
+from .models import subject_choices, Question, Round, Player, PlayerAnswer
 import json
 # Create your views here.
 
+# View for the REGISTER page
 def register(request):
     context = {}
     context['subjects'] = subject_choices
@@ -17,8 +18,10 @@ def register(request):
         
         player = Player.objects.get(nickname=nickname)
         round = Round.objects.get(player=player, subject=subject)
-        
+        player_answers = PlayerAnswer.get_all_answers_from_user(nickname=nickname, subject=subject)
+
         context['round'] = round
+        context['player_answers'] = player_answers
         request.session['round'] = round.id
         return redirect('play')
     
@@ -47,7 +50,7 @@ def register(request):
         request.session['round'] = round.id
         return redirect('play')
 
-
+# View for the GAME page
 def play(request):
     context = {}
     if (request.method == 'GET'):
@@ -60,6 +63,7 @@ def play(request):
 
             context['questions'] = Question.objects.filter(
                 subject=context['round'].subject)
+            context['player_answers'] = PlayerAnswer.get_all_answers_from_user(round = context['round'])
             return render(request, 'game.html', context=context)
             #del request.session['round']
         else:
@@ -71,16 +75,6 @@ def play(request):
         return render(request, 'game.html')
 
 
-def getQuestionsJSON(subject):
-    questions = []
-    for question in Question.objects.filter(subject=subject):
-        questions.append(
-            {
-                "tip": question.tip,
-                "answer": question.answer,
-                "difficulty": question.difficulty,
-                "subject": question.subject
-            }
-        )
-
-    return questions
+# View that controls when the player ANSWER a question (by using all the chances or by getting it right)
+def answer(request):
+    pass
