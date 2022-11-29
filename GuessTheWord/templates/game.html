@@ -195,7 +195,7 @@
 {% block player_record %}
     {% if round %}
         <p class='text-right' >Questão atual: </p>
-        <h2 id="current_question_text" class='text-right'></h2>
+        <h2 id="current_question_text" class='text-right'>{{current_question}}</h2>
         <br>
         <p class='text-right'>Sua pontuação atual é: </p>
         <h2 id="player_score" class='text-right'>{{round.score}}</h2>
@@ -207,7 +207,6 @@
 
         <script>
             current_question_text = document.getElementById("current_question_text");
-            current_question_text.innerHTML = parseInt("{{round.current_question}}");
             
             function replaceChar(origString, replaceChar, index){
                 let firstPart = origString.slice(0, index);
@@ -226,8 +225,6 @@
                 }  
                 window.location.assign(replaceChar(window.location.href, nextQuestionNumber, -2));
 
-                // TODO: NAO ESTA ATUALIZANDO CORRETAMENTE O MARCADOR DE  QUESTAO ATUAL
-                current_question_text.innerHTML = nextQuestionNumber;
             }
 
             // TRATAMENTO DO BOTAO QUE EXIBE A PROXIMA QUESTÃO
@@ -238,7 +235,6 @@
                     nextQuestionNumber = nextQuestionNumber - 1
                 } 
                 window.location.assign(replaceChar(window.location.href, nextQuestionNumber, -2));
-                current_question_text.innerHTML = nextQuestionNumber;
 
             }
         </script>
