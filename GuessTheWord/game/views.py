@@ -72,6 +72,8 @@ def play(request, question_id):
             context['player_answers'] = PlayerAnswer.get_all_answers_from_user(round = context['round'])
 
             context['number_of_questions'] = Question.get_total_number_of_questions()
+
+            context['current_question'] = question_id
             
             return render(request, 'game.html', context=context)
             #del request.session['round']
