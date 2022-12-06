@@ -11,14 +11,18 @@
 }
 
 body {
-    background-color: #000000;
+    background-color: rgb(13, 17, 21);
     margin: 0;
 }
 
 
 h1,
 h2,
-h3 {
+h3,
+#a_title,
+#a_title:hover,
+#a_title:focus,
+#a_title:active {
     font-family: 'Press Start 2P', cursive;
     margin: 0 auto 0 auto;
     text-align: left;
@@ -28,9 +32,16 @@ h3 {
     font-weight: 400;
 }
 
+#a_title,
+#a_title:hover,
+#a_title:focus,
+#a_title:active{
+    text-decoration: none;
+}
+
 h1 {
     font-size: 1.7em;
-    width: 260px;
+    width: 300px;
 
 }
 
@@ -52,23 +63,11 @@ h1 {
     padding: 5px;
 }
 
-
-
-#a_title,
-#a_title:hover,
-#a_title:focus,
-#a_title:active {
-    text-decoration: none;
-
-    font-family: 'Press Start 2P', cursive;
-    margin: 0 auto 0 auto;
-    text-align: left;
-    position: relative;
-    text-shadow: 3px 3px 0px #2038ec;
-    color: #fff;
-    font-weight: 400;
+/* GAME BLOCK - ALL THE PAGE EXCEPT HEADER */
+#game-block{
+    border-top: 2px dashed white;
+    padding-top: 20px;
 }
-
 /* PLAYER RECORD AND PROFILE */
 .player-profile {
     margin-left: 2%;
@@ -203,20 +202,70 @@ label {
 }
 
 .letter-input p {
-    font-size: 1.4em;
+    font-size: 1.5em;
     margin-bottom: 0;
 }
 
 .wrong-letter {
-    background-color: #3F0000;
+    /* background-color: #3F0000; */
+    /* background-color: #c75e49; */
+    background-color: #E76E55;
+    color: #000;
 }
 
 .wrong-pos-letter {
-    background-color: #666600;
+    /* background-color: #666600; */
+    /* background-color: #bda416; */
+    background-color: #f7d51d;
+    color: #000;
 }
 
 .correct-letter {
-    background-color: #003F00;
+    /* background-color: #003F00; */
+    /* background-color: #618b26; */
+    background-color: #92cc41;
+    color: #000;
+}
+
+/* KEYBOARD STYLE */
+#keyboard{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5em;
+}
+
+#enter-key{
+    padding: 0.5rem 0.3rem;
+}
+
+#backspace-key{
+    padding: 0.5em 0.5em;
+}
+
+.keyboard-key{
+    font-size: 1.1em;
+    display:inline-block;
+    padding:0.5em 0.74em;
+    margin:0 0.2em 0.5em 0;
+    box-sizing: border-box;
+    color:#000;
+    text-align:center;
+    transition: all 0.2s;
+}
+
+.keyboard-key:hover{
+    padding:0.7em 1.6em;
+    margin:0 0.5em 0.5em 0;
+}
+
+@media screen and (max-width:500px){
+    .keyboard-key{
+    margin:0.4em auto;
+    font-size: 2vw;
+    }
 }
 
 /* ABOUT */
@@ -229,12 +278,12 @@ label {
 /* PREVIOUS AND NEXT QUESTION BUTTONS */
 #next-question-button {
     right: 10%;
-    top: 50%;
+    top: 78%;
     position: absolute;
 }
 
 #previous-question-button {
     left: 10%;
-    top: 50%;
+    top: 78%;
     position: absolute;
 }

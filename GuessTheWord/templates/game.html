@@ -8,7 +8,7 @@
         <p><br>Obrigado por jogar nosso jogo!</p>
 
         <button type="button" class='nes-btn' id="previous-question-button" onclick="">
-            <img style="" src="https://img.icons8.com/ios-filled/30/000000/chevron-left.png"/>
+            <img style="" src="https://img.icons8.com/ios-filled/25/000000/chevron-left.png"/>
         </button>
     {% else %}
         <h3>Jogador não encontrado</h3>
@@ -23,9 +23,70 @@
         <div id="div-enunciado" class="align-items-center text-center">
 
         </div>
+        <!-- GAME BOARD -->
         <div id="game">
 
         </div>
+
+        <!-- KEYBOARD -->
+        <div id="keyboard">
+            <div id="row-1">
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">q</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">w</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">e</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">r</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">t</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">y</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">u</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">i</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">o</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">p</button>
+            </div>
+    
+            <div id="row-2">
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">a</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">s</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">d</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">f</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">g</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">h</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">j</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">k</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">l</button>
+            </div>
+    
+            <div id="row-3 ">
+                <button class="nes-btn keyboard-key" id="enter-key" onclick="put_letter(this)">Enter</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">z</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">x</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">c</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">v</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">b</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">n</button>
+                <button class="nes-btn keyboard-key" onclick="put_letter(this)">m</button>
+                <button class="nes-btn keyboard-key" id="backspace-key" onclick="put_letter(this)">Backspace</button>
+            </div>
+        </div>
+
+        <!-- Keyboard Script -->
+        <script>
+            function put_letter(element){
+                if(element.id === "enter-key"){
+                    guess_check();
+                    return;
+                }
+
+                if(element.id === "backspace-key"){
+                    delete_letter();
+                    return;
+                }
+
+                if(!element.disabled){
+                    insert_letter(element.textContent);
+                }
+            }
+        </script>
+
         <script>
             // Processando questao
             var question = {} 
@@ -121,27 +182,45 @@
             }
 
             function guess_check(){
+                // Keyboard buttons
+                let keyboard = document.getElementsByClassName("keyboard-key");
                 if(current_letter < number_of_characters){
                     return
                 }
                 guess_word = ""
                 for(i = 0; i < number_of_characters; i++){
-                    let current_row = document.getElementsByClassName("play-row")[current_guess]
-                    let box_letter = current_row.children[i]
-                    let current_letter = box_letter.textContent
-                    current_letter = current_letter.toUpperCase()
-                    guess_word = guess_word + current_letter
+                    let current_row = document.getElementsByClassName("play-row")[current_guess];
+                    let box_letter = current_row.children[i];
+                    let current_letter = box_letter.textContent;
+
                     
+                    current_letter = current_letter.toUpperCase();
+                    guess_word = guess_word + current_letter;
+                    
+                    for(let j = 0; j < keyboard.length; j++){
+                        if(keyboard[j].textContent.toUpperCase() === current_letter){
+                            var current_key = keyboard[j];
+                            break;
+                        }
+
+                    }
                     
                     if(current_letter == current_word[i]){
-                        box_letter.classList.add("correct-letter")
-                        correct_letter = correct_letter + 1
+                        box_letter.classList.add("correct-letter");
+                        current_key.classList.remove("is-warning");
+                        current_key.classList.add("is-success");
+                        // current_key.classList.add("correct-key");
+                        correct_letter = correct_letter + 1;
                     }
                     else if(current_word.indexOf(current_letter) != -1){
-                        box_letter.classList.add("wrong-pos-letter")
+                        box_letter.classList.add("wrong-pos-letter");
+                        current_key.classList.add("is-warning");
                     }
                     else{
-                        box_letter.classList.add("wrong-letter")
+                        box_letter.classList.add("wrong-letter");
+                        current_key.classList.add("nes-btn");
+                        current_key.classList.add("is-disabled");
+                        current_key.disabled = true;
                     }
                 }
                 if(correct_letter == number_of_characters){
@@ -202,7 +281,7 @@
         <p class='text-right'><br>Toda vez que você erra a resposta, sua pontuação é dividida por 2, então tome cuidado! Evite chutes.</p>
         
         <button type="button" class='nes-btn' id="next-question-button">
-            <img style="transform: rotate(180deg);" src="https://img.icons8.com/ios-filled/30/000000/chevron-left.png"/>
+            <img style="transform: rotate(180deg);" src="https://img.icons8.com/ios-filled/25/000000/chevron-left.png"/>
         </button>
 
         <script>
