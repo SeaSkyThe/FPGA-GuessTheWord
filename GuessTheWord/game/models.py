@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 # Create your models here.
 subject_choices = (
     ('circuitos_digitais', 'Circuitos Digitais'),
@@ -12,8 +13,9 @@ difficulty_choices = (
     ('hard', 'Hard'),
 )
 
-# Question - o nome é descritivo
+# Question - modelo das questoes 
 class Question(models.Model):
+    number = models.IntegerField('Question Number')
     difficulty = models.CharField(
         max_length=99, choices=difficulty_choices, verbose_name='Dificuldade', default='Easy')
     tip = models.TextField(verbose_name='Dica/Enunciado')
@@ -22,11 +24,11 @@ class Question(models.Model):
     answer = models.CharField(max_length=50, verbose_name='Resposta')
 
     def __str__(self) -> str:
-        return f"{self.id} - {self.subject} - {self.tip}"
+        return f"ID: {self.id} - Numero: {self.number} - Disciplina: {self.subject} - Enunciado: {self.tip}"
 
     @classmethod
-    def get_total_number_of_questions(cls):
-        return cls.objects.all().count()
+    def get_total_number_of_questions(cls, subject):
+        return cls.objects.filter(subject=subject).count()
     
 class Player(models.Model):
     nickname = models.CharField(max_length=40, verbose_name='Nickname', unique=True)
@@ -40,7 +42,7 @@ class Round(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     subject = models.CharField(max_length=99, choices=subject_choices)
     score = models.DecimalField(decimal_places=0, max_digits=20, default=256)
-    current_question = models.DecimalField(decimal_places=0, max_digits=4, default=0)
+    current_question = models.DecimalField(decimal_places=0, max_digits=4, default=1)
 
     def __str__(self) -> str:
         return f"Round: {self.id} - From: {self.player}"
@@ -51,6 +53,7 @@ class PlayerAnswer(models.Model):
     round = models.ForeignKey(Round, on_delete=models.CASCADE)
     question_id = models.DecimalField(verbose_name='Question ID', decimal_places=0, max_digits=99)
     player_answer = models.CharField(max_length=99)
+    position_in_game = models.DecimalField(verbose_name='Position', decimal_places=0, max_digits=5, default=0)
     
     class Meta:
         verbose_name_plural = "Players Answers"

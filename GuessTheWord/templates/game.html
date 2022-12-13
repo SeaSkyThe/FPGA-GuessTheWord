@@ -94,14 +94,14 @@
             var resposta = ""
             var dificuldade = ""
             var disciplina = ""
-            var question_id = ""
+            var question_number = ""
             {% for question in question %} // Aqui é uma lista com apenas uma questão, para facilitar o manuseio da questao via javascript
                 enunciado = "{{question.tip}}"
                 resposta = "{{question.answer}}"
                 dificuldade = "{{question.difficulty}}"
                 disciplina = "{{question.subject}}"
-                question_id = parseInt("{{question.id}}")
-                question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina, "question_id": question_id}
+                question_number = parseInt("{{question.number}}")
+                question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina, "question_number": question_number}
             {% endfor %}
             // console.log(question);
             let dict_answer_return = dict_answer(question.answer)
@@ -118,6 +118,20 @@
             var current_word = resposta.toUpperCase()
             var number_of_characters = current_word.length
             var correct_letter = 0
+
+
+            async function sendAnswer(player_answers) {
+                url = "{% url 'play' question.0.id %}";
+                data = {'player_answers': player_answers, 'round_id': '{{round.id}}'};
+                // Default options are marked with *
+                const response = await fetch(url, {
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    headers: {"X-Requested-With": "XMLHttpRequest" },
+                    body: JSON.stringify(data) // body data type must match Content-Type header
+                });
+                window.location.assign(response.url);
+                return response.json(); // parses JSON response into native JavaScript objects
+            }
 
             // Init board
             function init(){
@@ -284,6 +298,7 @@
                 if(correct_letter == number_of_characters){
                     console.log(tries)
                     current_guess = number_of_guesses
+                    sendAnswer(tries); // Envia as respostas para o servidor
                 }
                 else{
                     // Salvando as tentativas
