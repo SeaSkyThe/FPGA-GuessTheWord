@@ -41,7 +41,7 @@ class Player(models.Model):
 class Round(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     subject = models.CharField(max_length=99, choices=subject_choices)
-    score = models.DecimalField(decimal_places=0, max_digits=20, default=256)
+    score = models.DecimalField(decimal_places=0, max_digits=20, default=64)
     current_question = models.DecimalField(decimal_places=0, max_digits=4, default=1)
 
     def __str__(self) -> str:

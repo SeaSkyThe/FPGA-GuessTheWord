@@ -90,8 +90,6 @@ def play(request, question_number):
             context['number_of_questions'] = Question.get_total_number_of_questions(context['round'].subject)
 
             context['current_question'] = question_number
-            
-            print(f"\n\n Questao enviada para o template {context['question'][0]} \n\n")
             return render(request, 'game.html', context=context)
             #del request.session['round']
         else:
@@ -109,13 +107,11 @@ def play(request, question_number):
         round.current_question = question_number
         round.save()
     
-        number_of_questions = Question.get_total_number_of_questions()
+        number_of_questions = Question.get_total_number_of_questions(round.subject)
         if(number_of_questions >= question_number+1):
             current_question = question_number+1
         else:
             current_question = question_number
-        
-        print(f"\n\n{round.player} \nQuestion ID: {question_number}\n\n")
         return redirect(play, question_number=current_question)
 
 

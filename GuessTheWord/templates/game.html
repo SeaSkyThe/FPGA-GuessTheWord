@@ -121,7 +121,7 @@
 
 
             async function sendAnswer(player_answers) {
-                url = "{% url 'play' question.0.id %}";
+                url = "{% url 'play' question.0.number %}";
                 data = {'player_answers': player_answers, 'round_id': '{{round.id}}'};
                 // Default options are marked with *
                 const response = await fetch(url, {
