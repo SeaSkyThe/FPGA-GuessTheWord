@@ -37,6 +37,7 @@ def adjust_question_numbers_sistemas_operacionais_2(modeladmin, request, queryse
     adjust_indexes(query)
 
 class QuestionFilter(admin.ModelAdmin):
+    readonly_fields = ('id',)
     list_display = ["number", "difficulty", "subject", "tip", "answer"]
     list_filter = ["difficulty", "subject"]
     actions=[adjust_question_numbers_circuitos_digitais, 
@@ -48,7 +49,11 @@ class RoundFilter(admin.ModelAdmin):
     list_display = ["player", "subject", "score", "current_question"]
     list_filter = ["subject"]
 
+class PlayerAnswerFilter(admin.ModelAdmin):
+    list_display = ["round", "question_number", "player_answer", "position_in_game", "is_final_answer"]
+    list_filter = ['round__player', 'round__subject', ]
+
 admin.site.register(Question, QuestionFilter)
 admin.site.register(Round, RoundFilter)
 admin.site.register(Player)
-admin.site.register(PlayerAnswer)
+admin.site.register(PlayerAnswer, PlayerAnswerFilter)

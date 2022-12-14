@@ -21,12 +21,12 @@ def register(request):
         
         player = Player.objects.get(nickname=nickname)
         round = Round.objects.get(player=player, subject=subject)
-        player_answers = PlayerAnswer.get_all_answers_from_user(nickname=nickname, subject=subject)
+        #player_answers = PlayerAnswer.get_all_answers_from_user_json(nickname=nickname, subject=subject)
 
         context['round'] = round
-        context['player_answers'] = player_answers
+        #context['player_answers'] = player_answers
         request.session['round'] = round.id
-        return redirect('play/'+str(round.current_question)+'/')
+        return redirect(play, question_number=round.current_question)
     
     elif (request.method == 'GET'): # Se for uma GET request, renderiza a pagina de registro
         return render(request, 'register.html', context=context)
@@ -48,19 +48,20 @@ def register(request):
             # Se não existir o round, cria o round e boa
             else:
                 context['player_exists'] = True
-                # Cria um round, passando o player e a disciplina. (A pontuação automaticamente inicia com 256)
+                # Cria um round, passando o player e a disciplina. (A pontuação automaticamente inicia com 64*numero_de_questoes)
                 round = Round.objects.create(player=player, subject=subject)
+                round.score = (round.score)*Question.get_total_number_of_questions(subject)
                 context['round'] = round
                 request.session['round'] = round.id                
                 
-                return redirect('play/'+str(round.current_question)+'/')
+                return redirect(play, question_number=round.current_question)
         # Se não existir o player, cria ele e o round
         else:
             context['player_exists'] = False
             player = Player.objects.create(nickname=nickname)
-            # Cria um round, passando o player e a disciplina. (A pontuação automaticamente inicia com 256)
+            # Cria um round, passando o player e a disciplina. (A pontuação automaticamente inicia com 64*numero_de_questoes)
             round = Round.objects.create(player=player, subject=subject)
-
+            round.score = (round.score)*Question.get_total_number_of_questions(subject)
             context['round'] = round
             request.session['round'] = round.id
             return redirect('play/'+str(round.current_question)+'/')
@@ -84,8 +85,9 @@ def play(request, question_number):
                     subject=context['round'].subject)]
             except: # Caso não seja encontrao uma questão com esse numero, enviamos a primeira questão
                 context['question'] = [Question.objects.order_by('number').first()]
-                
-            context['player_answers'] = PlayerAnswer.get_all_answers_from_user(round = context['round'])
+            
+            q_number = context['question'][0].number
+            context['player_answers'] = (PlayerAnswer.get_all_answers_from_user_json(round = context['round'], question_number=q_number))
 
             context['number_of_questions'] = Question.get_total_number_of_questions(context['round'].subject)
 
@@ -101,10 +103,12 @@ def play(request, question_number):
 
     #controls when the player ANSWER a question (when the player uses all the chances (WRONG) or by getting it right (RIGHT))
     elif(request.is_ajax()):
-        print(f"\n\n AJAX {request.body} Question ID: {question_number}\n\n")
+        # Load request body
         body = json.loads(request.body)
+        # Atualiza a questão atual do usuário
         round = Round.objects.get(id=body['round_id'])
         round.current_question = question_number
+        round.score = int(body['score'])
         round.save()
     
         number_of_questions = Question.get_total_number_of_questions(round.subject)
@@ -112,8 +116,22 @@ def play(request, question_number):
             current_question = question_number+1
         else:
             current_question = question_number
+
+        # Registra as tentativas de respostas do usuario
+        for answer_index in body['player_answers']:
+            is_final = False
+            if(int(answer_index) == int(len(body['player_answers']) - 1)):
+                is_final = True
+            # TODO REQUEST BEING RECEIVED 2 TIMES, AND DUPLICATING PLAYERANSWERS
+            # TODO SAVE SCORE
+            # TODO mark as final answers
+            PlayerAnswer.objects.create(round=round, 
+                                        question_number=question_number, 
+                                        player_answer=body['player_answers'][answer_index], 
+                                        position_in_game=answer_index, 
+                                        is_final_answer=is_final)
+        #print(PlayerAnswer.get_all_answers_from_user_json(nickname='Groot'.title(), subject='circuitos_digitais'))
         return redirect(play, question_number=current_question)
 
 
 
-# LAST CHANGE WAS TRYING TO STOP USING QUESTION.ID AND USE QUESTION.NUMBER
