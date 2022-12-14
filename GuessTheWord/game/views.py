@@ -51,6 +51,7 @@ def register(request):
                 # Cria um round, passando o player e a disciplina. (A pontuação automaticamente inicia com 64*numero_de_questoes)
                 round = Round.objects.create(player=player, subject=subject)
                 round.score = (round.score)*Question.get_total_number_of_questions(subject)
+                round.save()
                 context['round'] = round
                 request.session['round'] = round.id                
                 
@@ -62,6 +63,7 @@ def register(request):
             # Cria um round, passando o player e a disciplina. (A pontuação automaticamente inicia com 64*numero_de_questoes)
             round = Round.objects.create(player=player, subject=subject)
             round.score = (round.score)*Question.get_total_number_of_questions(subject)
+            round.save()
             context['round'] = round
             request.session['round'] = round.id
             return redirect('play/'+str(round.current_question)+'/')
@@ -105,17 +107,19 @@ def play(request, question_number):
     elif(request.is_ajax()):
         # Load request body
         body = json.loads(request.body)
-        # Atualiza a questão atual do usuário
         round = Round.objects.get(id=body['round_id'])
-        round.current_question = question_number
-        round.score = int(body['score'])
-        round.save()
-    
+        
         number_of_questions = Question.get_total_number_of_questions(round.subject)
         if(number_of_questions >= question_number+1):
             current_question = question_number+1
         else:
-            current_question = question_number
+            current_question = question_number ## TODO redirect to "GAME FINISHED PAGE"
+
+        # Atualiza a questão atual do usuário
+        
+        round.current_question = question_number
+        round.score = int(body['score'])
+        round.save()
 
         # Registra as tentativas de respostas do usuario
         for answer_index in body['player_answers']:
