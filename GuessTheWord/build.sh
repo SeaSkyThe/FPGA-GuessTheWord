@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -or errexit
 cd ..
 pip install -r requirements.txt
