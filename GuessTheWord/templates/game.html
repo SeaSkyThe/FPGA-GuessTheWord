@@ -29,7 +29,7 @@
         </div>
 
         <!-- KEYBOARD -->
-        <div id="keyboard">
+        <div id="keyboard" style="display:none;">
             <div id="row-1">
                 <button class="nes-btn keyboard-key" onclick="put_letter(this)">q</button>
                 <button class="nes-btn keyboard-key" onclick="put_letter(this)">w</button>
@@ -67,7 +67,8 @@
                 <button class="nes-btn keyboard-key" id="backspace-key" onclick="put_letter(this)">Backspace</button>
             </div>
         </div>
-
+        {% comment %} https://docs.djangoproject.com/en/2.2/ref/templates/builtins/#json-script {% endcomment %}
+        {{ player_answers|json_script:"player-answers" }}
         <!-- Keyboard Script -->
         <script>
             function put_letter(element){
@@ -94,14 +95,14 @@
             var resposta = ""
             var dificuldade = ""
             var disciplina = ""
-            var question_id = ""
+            var question_number = ""
             {% for question in question %} // Aqui é uma lista com apenas uma questão, para facilitar o manuseio da questao via javascript
                 enunciado = "{{question.tip}}"
                 resposta = "{{question.answer}}"
                 dificuldade = "{{question.difficulty}}"
                 disciplina = "{{question.subject}}"
-                question_id = parseInt("{{question.id}}")
-                question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina, "question_id": question_id}
+                question_number = parseInt("{{question.number}}")
+                question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina, "question_number": question_number}
             {% endfor %}
             // console.log(question);
             let dict_answer_return = dict_answer(question.answer)
@@ -109,8 +110,11 @@
             var letter_count = dict_answer_return[1];
             var tries = {};
             // Score Variables
-            var score = parseInt("{{round.score}}")
+            var total_score = parseInt("{{round.score}}")
+            var question_score = parseInt(total_score/parseInt("{{number_of_questions}}"))
             var score_area
+            // Player Answers
+            var player_answers = JSON.parse(document.getElementById('player-answers').textContent);
             // Global Variables
             var current_guess = 0
             var current_letter = 0
@@ -118,6 +122,26 @@
             var current_word = resposta.toUpperCase()
             var number_of_characters = current_word.length
             var correct_letter = 0
+
+
+            function isEmptyObject(obj){
+                return JSON.stringify(obj) === '{}'
+            }
+
+            async function sendAnswer(player_answers) {
+                url = "{% url 'play' question.0.number %}";
+                data = {'player_answers': player_answers, 'round_id': '{{round.id}}', 'score': total_score};
+                // Default options are marked with *
+                const response = await fetch(url, {
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    headers: {"X-Requested-With": "XMLHttpRequest", 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'},
+                    body: JSON.stringify(data) // body data type must match Content-Type header
+                });
+                window.location.assign(response.url);
+                return response.json(); // parses JSON response into native JavaScript objects
+            }
 
             // Init board
             function init(){
@@ -144,6 +168,9 @@
                     }
                     play.appendChild(each_row)
                 }
+                // Showing keyboard 
+                keyboard = document.getElementById('keyboard');
+                keyboard.style.display = "flex";
             }
 
             function remake_game(tentativas){
@@ -173,8 +200,13 @@
             }
             
             window.onload = (event)=>{
-                init()
-                // remake_game({0: 'SEOAOIFKNM', 1: 'MFDKHNESKL', 2: 'JAVASCRIPT'});
+                init();
+                player_answers = JSON.parse(player_answers);
+                if(!isEmptyObject(player_answers)){
+                    remake_game(player_answers);
+                }
+
+                //remake_game({0: 'SEOAOIFKNM', 1: 'MFDKHNESKL', 2: 'JAVASCRIPT'});
             }
             
             function dict_answer(answer){
@@ -281,20 +313,30 @@
                     }
                 }
                 tries[current_guess] = guess_word;
+                var correct_answer_hit = false
                 if(correct_letter == number_of_characters){
-                    console.log(tries)
+                    //console.log(tries)
                     current_guess = number_of_guesses
+                    correct_answer_hit = true
+                    sendAnswer(tries); // Envia as respostas para o servidor
                 }
                 else{
-                    // Salvando as tentativas
-                    current_guess = current_guess + 1
+                    // Salvando as tentativas e atualizando Pontuacao
+                    question_score = parseInt(question_score/2)
+                    total_score = parseInt(total_score-question_score);
+                    score_area.textContent = total_score;
+                    current_guess = current_guess + 1;
+                }
+
+                if(current_guess >= number_of_guesses && !correct_answer_hit){ // Caso acabem as tentativas, envia para o server
+                    sendAnswer(tries);
                 }
                 current_letter = 0
                 correct_letter = 0
             }
 
             function insert_letter(pressed_key){
-                if(current_letter >= number_of_characters || current_guess === number_of_guesses){
+                if(current_letter >= number_of_characters || current_guess === number_of_guesses){ 
                     return
                 }
                 let current_row = document.getElementsByClassName("play-row")[current_guess]
