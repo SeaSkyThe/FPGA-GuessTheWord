@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -or errexit
+set -o errexit
 cd ..
 pip install -r requirements.txt
 cd GuessTheWord
