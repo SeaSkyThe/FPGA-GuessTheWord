@@ -104,6 +104,9 @@
                 question_number = parseInt("{{question.number}}")
                 question = {"tip": enunciado, "answer": resposta, "difficulty": dificuldade, "subject": disciplina, "question_number": question_number}
             {% endfor %}
+            resposta = resposta.normalize("NFD").replace(/[\u0300-\u036f]/g, "") // removendo acentos
+            index_of_space = resposta.indexOf(' ')
+            console.log(index_of_space)
             // console.log(question);
             let dict_answer_return = dict_answer(question.answer)
             var letter_bool = dict_answer_return[0];
@@ -152,6 +155,7 @@
                 enunciado = document.createElement("p")
                 //enunciado.textContent = questions[0].tip
                 enunciado.textContent = question.tip
+                enunciado.style.textAlign = 'center'
 
                 let play = document.getElementById("game")
                 play.innerHTML = ""
@@ -163,7 +167,13 @@
                     each_row.classList.add("play-row")
                     for(j = 0; j < number_of_characters; j++){
                         let box_letter = document.createElement("div")
-                        box_letter.classList.add("play-box")
+                        if(j == index_of_space){
+                            box_letter.classList.add("play-box")
+                            box_letter.style.border = 'black'
+                        }else{
+                            box_letter.classList.add("play-box")
+                        }
+                        
                         each_row.appendChild(box_letter)
                     }
                     play.appendChild(each_row)
@@ -176,14 +186,16 @@
             function remake_game(tentativas){
                 for(let i = 0; i < Object.keys(tentativas).length; i++){
                     let current_row = document.getElementsByClassName("play-row")[i];
-                    let current_try = tentativas[i]
+                    let current_try = tentativas[i];
                     for(let j = 0; j < number_of_characters; j++){
+                        if(j == index_of_space){
+                            continue;
+                        }
                         let box_letter = current_row.children[j];
-                        let paragraph = document.createElement("p")
+                        let paragraph = document.createElement("p");
                         paragraph.textContent = current_try[j];
-                        box_letter.appendChild(paragraph)
-                        box_letter.classList.add("letter-input")
-
+                        box_letter.appendChild(paragraph);
+                        box_letter.classList.add("letter-input");
                         if(current_try[j] === current_word[j]){ // Letra no local certo
                             box_letter.classList.add("correct-letter");
                         }
@@ -236,7 +248,7 @@
                     return
                 }
 
-                let match_key = pressed_key.match(/^[a-z|A-Z]$/)
+                let match_key = pressed_key.match(/^[A-Za-z|-]$/)
                 
                 if(match_key > 1 || !match_key){
                     return
@@ -248,24 +260,26 @@
 
             function delete_letter(){
                 if(current_letter === 0 || current_guess === number_of_guesses){
-                    return
+                    return;
                 }
-                let row = document.getElementsByClassName("play-row")[current_guess]
-                let box = row.children[current_letter-1]
-                box.textContent = ""
-                box.classList.remove("letter-input")
-                box.classList.add("play-box")
-                current_letter = current_letter - 1
+                let row = document.getElementsByClassName("play-row")[current_guess];
+                let box = row.children[current_letter-1];
+                box.textContent = "";
+                box.classList.remove("letter-input");
+                box.classList.add("play-box");
+                current_letter = current_letter - 1;
             }
 
             function guess_check(){
                 // Keyboard buttons
+                let current_is_space = 0;
                 let keyboard = document.getElementsByClassName("keyboard-key");
                 if(current_letter < number_of_characters){ //Todos os box preenchidos
-                    return
+                    return;
                 }
                 guess_word = "" //Palavra de tentativa
                 for(i = 0; i < number_of_characters; i++){
+                    current_is_space = 0;
                     let current_row = document.getElementsByClassName("play-row")[current_guess];
                     let box_letter = current_row.children[i];
                     let current_letter = box_letter.textContent;
@@ -281,11 +295,18 @@
                         }
 
                     }
-                    
+                    if(i === index_of_space){
+                        guess_word = guess_word + " ";
+                        current_letter = " ";
+                        current_is_space = 1;
+                    }
                     if(current_letter === current_word[i]){ // Letra no local certo
-                        box_letter.classList.add("correct-letter");
-                        current_key.classList.remove("is-warning");
-                        current_key.classList.add("is-success");
+                        if(!current_is_space){
+                            box_letter.classList.add("correct-letter");
+                            current_key.classList.remove("is-warning");
+                            current_key.classList.add("is-success");
+                        }
+                        
                         if(letter_count[current_letter] > 0){
                             letter_count[current_letter] -= 1;
                         }
@@ -294,7 +315,6 @@
                         }
                         // current_key.classList.add("correct-key");
                         correct_letter = correct_letter + 1;
-
                     }
                     else if(current_word.indexOf(current_letter) != -1){ //Letra certa no local errado
                         if(letter_count[current_letter] > 0){
@@ -318,6 +338,7 @@
                     //console.log(tries)
                     current_guess = number_of_guesses
                     correct_answer_hit = true
+                    console.log(guess_word)
                     sendAnswer(tries); // Envia as respostas para o servidor
                 }
                 else{
@@ -338,6 +359,9 @@
             function insert_letter(pressed_key){
                 if(current_letter >= number_of_characters || current_guess === number_of_guesses){ 
                     return
+                }
+                if(current_letter == index_of_space){
+                    current_letter = current_letter + 1
                 }
                 let current_row = document.getElementsByClassName("play-row")[current_guess]
                 let box_letter = current_row.children[current_letter]
@@ -379,7 +403,7 @@
         <br>
         <p class='text-right'>Sua pontuação atual é: </p>
         <h2 id="player_score" class='text-right'>{{round.score}}</h2>
-        <p class='text-right'><br>Toda vez que você erra a resposta, sua pontuação é dividida por 2, então tome cuidado! Evite chutes.</p>
+        <p class='text-right'><br>Toda vez que você erra a resposta, sua pontuação diminui, então tome cuidado! Evite chutes.</p>
         
         <button type="button" class='nes-btn' id="next-question-button">
             <img style="transform: rotate(180deg);" src="https://img.icons8.com/ios-filled/25/000000/chevron-left.png"/>
