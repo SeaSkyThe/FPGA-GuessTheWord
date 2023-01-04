@@ -27,6 +27,9 @@ class Question(models.Model):
     def __str__(self) -> str:
         return f"ID: {self.id} - Numero: {self.number} - Disciplina: {self.subject} - Enunciado: {self.tip}"
 
+    class Meta:
+        unique_together = ('number', 'subject',)
+        
     @classmethod
     def get_total_number_of_questions(cls, subject):
         return cls.objects.filter(subject=subject).count()
