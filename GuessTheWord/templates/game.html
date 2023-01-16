@@ -106,7 +106,7 @@
             {% endfor %}
             resposta = resposta.normalize("NFD").replace(/[\u0300-\u036f]/g, "") // removendo acentos
             index_of_space = resposta.indexOf(' ')
-            console.log(index_of_space)
+            // console.log(index_of_space)
             // console.log(question);
             let dict_answer_return = dict_answer(question.answer)
             var letter_bool = dict_answer_return[0];
@@ -188,7 +188,7 @@
                     let current_row = document.getElementsByClassName("play-row")[i];
                     let current_try = tentativas[i];
                     for(let j = 0; j < number_of_characters; j++){
-                        if(j == index_of_space){
+                        if(j === index_of_space){
                             continue;
                         }
                         let box_letter = current_row.children[j];
@@ -196,17 +196,8 @@
                         paragraph.textContent = current_try[j];
                         box_letter.appendChild(paragraph);
                         box_letter.classList.add("letter-input");
-                        if(current_try[j] === current_word[j]){ // Letra no local certo
-                            box_letter.classList.add("correct-letter");
-                        }
-                        else if(current_word.indexOf(current_try[j]) != -1){ //Letra certa no local errado
-                            box_letter.classList.add("wrong-pos-letter");
-                        }
-                        else{ //Letra errada
-                            box_letter.classList.add("wrong-letter");
-                        }
                     }
-                    
+                    guess_check(true) //Realizando o guess check da tentativa anterior, com a flag true para remake game
                 }
                 current_guess = number_of_guesses;
             }
@@ -269,12 +260,14 @@
                 box.classList.add("play-box");
                 current_letter = current_letter - 1;
             }
-
-            function guess_check(){
+            
+            // Remake é um boolean para identificar se a tentativa a ser checada é uma tentativa já gravada no banco
+            function guess_check(remake = false){
                 // Keyboard buttons
                 let current_is_space = 0;
                 let keyboard = document.getElementsByClassName("keyboard-key");
-                if(current_letter < number_of_characters){ //Todos os box preenchidos
+                
+                if(current_letter < number_of_characters && remake === false){ //Todos os box preenchidos
                     return;
                 }
                 guess_word = "" //Palavra de tentativa
@@ -283,7 +276,6 @@
                     let current_row = document.getElementsByClassName("play-row")[current_guess];
                     let box_letter = current_row.children[i];
                     let current_letter = box_letter.textContent;
-                    
                     
                     current_letter = current_letter.toUpperCase();
                     guess_word = guess_word + current_letter;
@@ -334,26 +326,33 @@
                 }
                 tries[current_guess] = guess_word;
                 var correct_answer_hit = false
-                if(correct_letter == number_of_characters){
+
+                if(remake === false){
+                    if(correct_letter == number_of_characters){ // Correto
                     //console.log(tries)
                     current_guess = number_of_guesses
                     correct_answer_hit = true
-                    console.log(guess_word)
                     sendAnswer(tries); // Envia as respostas para o servidor
+                    }
+                    else{
+                        // Salvando as tentativas e atualizando Pontuacao
+                        question_score = parseInt(question_score/2)
+                        total_score = parseInt(total_score-question_score);
+                        score_area.textContent = total_score;
+                        current_guess = current_guess + 1;
+                    }
+
+                    if(current_guess >= number_of_guesses && !correct_answer_hit){ // Caso acabem as tentativas, envia para o server
+                        sendAnswer(tries);
+                    }
+                    current_letter = 0
+                    correct_letter = 0
                 }
                 else{
-                    // Salvando as tentativas e atualizando Pontuacao
-                    question_score = parseInt(question_score/2)
-                    total_score = parseInt(total_score-question_score);
-                    score_area.textContent = total_score;
-                    current_guess = current_guess + 1;
+                    current_guess = current_guess + 1
                 }
-
-                if(current_guess >= number_of_guesses && !correct_answer_hit){ // Caso acabem as tentativas, envia para o server
-                    sendAnswer(tries);
-                }
-                current_letter = 0
-                correct_letter = 0
+                
+                
             }
 
             function insert_letter(pressed_key){
