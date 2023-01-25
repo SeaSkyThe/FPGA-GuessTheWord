@@ -167,7 +167,9 @@ Existem basicamente duas views (em forma de função) **play** e **register**.
 	 - Abaixo imagens das telas explicadas.
 	 
 		![Pagina de registro](images/TelaRegistro.png "Pagina de registro")
-![Pagina de confirmação](images/TelaRegistroConfirmacao.png "Pagina de confirmação")
+		
+		
+		![Pagina de confirmação](images/TelaRegistroConfirmacao.png "Pagina de confirmação")
 
  - **Play**: essa view vai ser responsável por processar as interações do jogador com o jogo de fato (localizado na url `/play/<numero_da_questao>:int)`.
 	 
@@ -189,6 +191,64 @@ Existem basicamente duas views (em forma de função) **play** e **register**.
 
 
 ## Administração
-*TODO*: Falar sobre a tela de administração, importante ser bem detalhado para o professor.
+A tela de administração será o melhor amigo de quem é responsável pelo jogo.
+
+Para acessar essa tela, basta acessar a url `/admin`, e verá uma página semelhante a da imagem abaixo: 
+		![Pagina de Login Adm](images/PaginaLoginAdmin.png "Pagina de login admin")
+
+Vendo essa tela, basta acessar com as credenciais de administrador. E terá uma tela parecida com isso:
+
+![Pagina de Admin](images/TelaAdmin1.png "Pagina de admin")
+
+Na imagem acima, podemos ver destacado em vermelho os locais onde podemos adicionar ou editar novas instancias dos objetos:
+
+ - Players
+ - Players Answers
+ - Questions
+ - Rounds
+
+Idealmente, **recomenda-se apenas a adição e remoção de Questions**, então iremos utilizar elas como exemplo (mas o mesmo serve para os outros objetos).
+
+Clicando em `+ add` ao lado de Questions, temos acesso a página abaixo, onde podemos definir o número da questão, a dificuldade (uma caixa de seleção com easy, medium e hard), a disciplina (uma caixa de seleção com circuitos digitais, arquitetura de computadores, sistemas operacionais 1 e sistemas operacionais 2). Por fim, no canto inferior direito, temos as opções de **SALVAR** a nova questão.
+
+ 
+![Pagina de adição de objeto](images/TelaAdmin2.png "Pagina de adicionar objeto")
+
+Partindo da mesma tela, e clicando diretamente no nome dos objetos (destacados em vermelho abaixo), podemos ver todos os existentes:
+
+![Pagina de ver os tipos de objeto](images/TelaAdmin3.png "Pagina de ver os tipos de objeto")
+
+Como exemplo, temos abaixo todas as questões listadas. Podemos ver destacado em verde, a lista de questões (claramente placeholders) e destacado em vermelho os possíveis filtros (pode-se filtrar por disciplina e por dificuldade da questão). 
+
+![Pagina de Admin lista de objetos](images/TelaAdmin4.png "Pagina de admin lista de objetos")
+
+A partir dessa lista de objetos, é possível **editar** um objeto existente, clicando no campo que está na cor azul, nesse caso o Question Number. Uma tela semelhante a de criação de objeto se abrirá, porém com os campos já preenchidos e com uma opção de *DELETAR* caso se queira.
+
+![Pagina de Admin edição de objeto](images/TelaAdmin5.png "Pagina de admin edição de objetos")
+
+Por fim, uma pequena funcionalidade adicionada na aba de listagem de questões é a ação de ajuste do numero das questões.
+Por exemplo, supondo que adicionamos as questões 1 a 10 e removemos a 3, é ideal adicionar uma questão 3 'nova' para que o jogo não quebre (incrementa de 1 em 1). Caso não seja possível, podemos usar essa funcionalidade que renumera todas as questões automaticamente, abaixo temos um passo a passo de como usar:
+
+ 1. Selecione todas as questões clicando na caixa de seleção indicada.
+
+![Tutorial reajuste números de questão](images/TelaAdminTutorial1.png "Tutorial reajuste números de questão")
+
+ 2.  Em seguida, abra a caixa de seleção indicada em vermelho, escolha a disciplina a qual deseja renumerar as questões e clique no botão `go` em azul.
+ 
+![Tutorial reajuste números de questão](images/TelaAdminTutorial2.png "Tutorial reajuste números de questão")
+
+ 3. Por fim, o resultado será esse, note os números das questões reajustados.
+
+![Tutorial reajuste números de questão](images/TelaAdminTutorial3.png "Tutorial reajuste números de questão")
+
+
 
 ## Possíveis melhorias
+
+Aceitar respostas maiores e mais complexas (não só uma ou poucas palavras). Atualmente temos problemas visuais com isso (respostas muito grandes saem da tela do jogo).
+
+Substituir o banco de dados (atualmente SQLite) por algo mais robusto.
+
+Backup de dados implementado.
+
+Adição de estatísticas internas na página de administração (acertos/tentativas do jogador e etc).
