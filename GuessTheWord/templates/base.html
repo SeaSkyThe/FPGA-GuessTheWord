@@ -109,7 +109,15 @@
     <dialog class="nes-dialog is-dark is-rounded" id="dialog-stats" style='display:inline;'>
         <h3 class="title">Estatísticas</h3>
         <br>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum necessitatibus cumque quae sit. Inventore exercitationem dolores provident maiores officia obcaecati, repellat enim corporis blanditiis ut, sit totam suscipit ab deleniti.</p>
+        {% if round %}
+            <p>Olá {{round.player.nickname}}, aqui temos algumas estatísticas sobre seu jogo:</p>
+            <p>-------------------------------------------------------------------------------</p>
+            <p>Número de questões respondidas: {{round.get_number_of_questions_answered}} de {{round.get_total_number_of_questions}}</p>
+            <p>Número de questões acertadas: {{round.get_number_of_questions_answered_correctly}} de {{round.get_number_of_questions_answered}}</p>
+            <p>Número total de tentativas corretas: {{round.get_number_of_correct_tries}} de {{round.get_number_of_tries}} </p>
+            <p>-------------------------------------------------------------------------------</p>
+            <p></p>
+        {% endif %}
         <button class="nes-btn is-primary" onclick="document.getElementById('dialog-stats').close();">Confirmar</button>
     </dialog>
 
