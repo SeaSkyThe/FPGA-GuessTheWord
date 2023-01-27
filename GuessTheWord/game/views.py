@@ -110,10 +110,8 @@ def play(request, question_number):
         round = Round.objects.get(id=body['round_id'])
         
         number_of_questions = Question.get_total_number_of_questions(round.subject)
-        if(number_of_questions >= question_number+1):
-            current_question = question_number+1
-        else:
-            current_question = question_number ## TODO redirect to "GAME FINISHED PAGE"
+
+        current_question = round.get_next_question_number()
 
         # Atualiza a questão atual do usuário
         

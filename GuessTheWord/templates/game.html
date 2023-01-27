@@ -422,7 +422,7 @@
             // TRATAMENTO DO BOTAO QUE EXIBE A QUESTÃO ANTERIOR
             document.getElementById('previous-question-button').addEventListener('click', previousQuestion);
             async function previousQuestion(){
-                nextQuestionNumber = parseInt(window.location.href.charAt(window.location.href.length - 2)) - 1;
+                nextQuestionNumber = parseInt(window.location.href.charAt(window.location.href.length - 2)) - 1; //Pega o valor da questão na url
                 if(nextQuestionNumber < 1){
                     nextQuestionNumber = nextQuestionNumber + 1
                 }  

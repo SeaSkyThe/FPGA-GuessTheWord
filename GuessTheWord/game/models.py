@@ -16,7 +16,7 @@ difficulty_choices = (
 
 # Question - modelo das questoes 
 class Question(models.Model):
-    number = models.IntegerField('Question Number') # Campo numero da questao
+    number = models.IntegerField('Question Number')
     difficulty = models.CharField(              
         max_length=99, choices=difficulty_choices, verbose_name='Dificuldade', default='Easy') # Campo dificuldade
     tip = models.TextField(verbose_name='Dica/Enunciado') # Campo enunciado
@@ -51,7 +51,27 @@ class Round(models.Model):
 
     def __str__(self) -> str:
         return f"Round: {self.id} - From: {self.player}"
-
+    
+    def get_next_question(self):
+        questions = Question.objects.order_by('number').filter(subject=self.subject)
+        
+        if(self.current_question == questions.last().number):
+            return self.current_question
+        
+        next_question_number = self.current_question + 1
+        next_question = None
+        
+        while(True):
+            try:
+                next_question = questions.get(number=next_question_number)
+                return next_question
+            except Question.DoesNotExist:
+                next_question_number = next_question_number + 1
+        
+        
+    def get_next_question_number(self):
+        question = self.get_next_question()
+        return question
     
     # Faz uma consulta no banco para pegar todas as respostas dos jogadores
     def get_all_player_answers(self):
@@ -78,7 +98,7 @@ class Round(models.Model):
         questions_answered_correctly = []
         for answer in answers:
             try:
-                question = Question.objects.filter(number=answer.question_number).first()
+                question = Question.objects.filter(number=answer.question_number, subject=self.subject).first()
                 if(question.answer.lower() == answer.player_answer.lower()): # Se a resposta da questao, for igual a dada pelo player, salvamos
                     if(not answer.question_number in questions_answered_correctly):  # Evitar duplicadas
                         questions_answered_correctly.append(answer.question_number)
@@ -98,7 +118,7 @@ class Round(models.Model):
         correct_answers = []
         for answer in answers:
             try:
-                question = Question.objects.filter(number=answer.question_number).first()
+                question = Question.objects.filter(number=answer.question_number, subject=self.subject).first()
                 if(question.answer.lower() == answer.player_answer.lower() and answer.is_final_answer):
                     if(not answer in correct_answers):
                         correct_answers.append(answer)
