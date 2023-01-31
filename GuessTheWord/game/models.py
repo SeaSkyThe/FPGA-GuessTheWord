@@ -17,20 +17,24 @@ difficulty_choices = (
 # Question - modelo das questoes 
 class Question(models.Model):
     number = models.IntegerField('Question Number')
-    difficulty = models.CharField(
-        max_length=99, choices=difficulty_choices, verbose_name='Dificuldade', default='Easy')
-    tip = models.TextField(verbose_name='Dica/Enunciado')
+    difficulty = models.CharField(              
+        max_length=99, choices=difficulty_choices, verbose_name='Dificuldade', default='Easy') # Campo dificuldade
+    tip = models.TextField(verbose_name='Dica/Enunciado') # Campo enunciado
     subject = models.CharField(
-        max_length=99, choices=subject_choices, verbose_name='Disciplina')
-    answer = models.CharField(max_length=50, verbose_name='Resposta')
+        max_length=99, choices=subject_choices, verbose_name='Disciplina') # Campo disciplina
+    answer = models.CharField(max_length=50, verbose_name='Resposta') # Campo resposta
 
     def __str__(self) -> str:
         return f"ID: {self.id} - Numero: {self.number} - Disciplina: {self.subject} - Enunciado: {self.tip}"
 
+    class Meta:
+        unique_together = ('number', 'subject',)
+        
     @classmethod
     def get_total_number_of_questions(cls, subject):
         return cls.objects.filter(subject=subject).count()
-    
+
+# Modelo do jogador
 class Player(models.Model):
     nickname = models.CharField(max_length=40, verbose_name='Nickname', unique=True)
 
@@ -47,8 +51,81 @@ class Round(models.Model):
 
     def __str__(self) -> str:
         return f"Round: {self.id} - From: {self.player}"
-
     
+    def get_next_question(self):
+        questions = Question.objects.order_by('number').filter(subject=self.subject)
+        
+        if(self.current_question == questions.last().number):
+            return self.current_question
+        
+        next_question_number = self.current_question + 1
+        next_question = None
+        
+        while(True):
+            try:
+                next_question = questions.get(number=next_question_number)
+                return next_question
+            except Question.DoesNotExist:
+                next_question_number = next_question_number + 1
+        
+        
+    def get_next_question_number(self):
+        question = self.get_next_question()
+        return question
+    
+    # Faz uma consulta no banco para pegar todas as respostas dos jogadores
+    def get_all_player_answers(self):
+        answers = PlayerAnswer.objects.filter(round=self)
+        return answers 
+    
+    # Consulta o numero total de questões:
+    def get_total_number_of_questions(self):
+        return Question.get_total_number_of_questions(subject=self.subject)
+        
+    # Verifica, quantas questões ja foram respondidas
+    def get_number_of_questions_answered(self):
+        answers = self.get_all_player_answers()
+        questions_answered = []
+        for answer in answers:
+            if(not answer.question_number in questions_answered):
+                questions_answered.append(answer.question_number)
+        
+        return len(questions_answered)
+    
+    # Verifica quantas questões foram respondidas corretamente
+    def get_number_of_questions_answered_correctly(self):
+        answers = self.get_all_player_answers()
+        questions_answered_correctly = []
+        for answer in answers:
+            try:
+                question = Question.objects.filter(number=answer.question_number, subject=self.subject).first()
+                if(question.answer.lower() == answer.player_answer.lower()): # Se a resposta da questao, for igual a dada pelo player, salvamos
+                    if(not answer.question_number in questions_answered_correctly):  # Evitar duplicadas
+                        questions_answered_correctly.append(answer.question_number)
+            except:
+                pass
+        
+        return len(questions_answered_correctly)
+
+    # Verifica o numero total de tentativas
+    def get_number_of_tries(self):
+        answers = self.get_all_player_answers()
+        return len(answers)
+    
+    # Verifica o numero total de tentativas certas
+    def get_number_of_correct_tries(self):
+        answers = self.get_all_player_answers()
+        correct_answers = []
+        for answer in answers:
+            try:
+                question = Question.objects.filter(number=answer.question_number, subject=self.subject).first()
+                if(question.answer.lower() == answer.player_answer.lower() and answer.is_final_answer):
+                    if(not answer in correct_answers):
+                        correct_answers.append(answer)
+            except:
+                pass
+        
+        return len(correct_answers)
 # Model que guarda as respostas(tentativas) dos jogadores
 # Nota-se que para cada questão, podemos ter varias respostas(tentativas)
 # Cada instancia de PlayerAnswer indica uma linha preenchida no jogo

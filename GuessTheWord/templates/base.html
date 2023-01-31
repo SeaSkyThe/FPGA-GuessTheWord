@@ -84,6 +84,7 @@
         <p>Você terá 6 chances para acertar a palavra.</p>
         <p>Cada questão vale 64 pontos no total, cada erro subtrai metade da pontuação atual dessa questão.</p>
         <p>Após cada chute, as letras mudarão de cor para te ajudar a chegar na resposta.</p>
+        <p><span style="color: #ffeb3b">WARNING: Não há necessidade do uso de espaço</span></p>
         <p>----------------------------------------------------------------</p>
         <p>A letra na cor <span style="color: green;">VERDE</span> indica que ela existe na palavra e está no local certo.</p>
         <p>A letra na cor <span style="color: yellow;">AMARELO</span> indica que ela existe na palavra e está no local errado.</p>
@@ -108,7 +109,15 @@
     <dialog class="nes-dialog is-dark is-rounded" id="dialog-stats" style='display:inline;'>
         <h3 class="title">Estatísticas</h3>
         <br>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum necessitatibus cumque quae sit. Inventore exercitationem dolores provident maiores officia obcaecati, repellat enim corporis blanditiis ut, sit totam suscipit ab deleniti.</p>
+        {% if round %}
+            <p>Olá {{round.player.nickname}}, aqui temos algumas estatísticas sobre seu jogo:</p>
+            <p>-------------------------------------------------------------------------------</p>
+            <p>Número de questões respondidas: {{round.get_number_of_questions_answered}} de {{round.get_total_number_of_questions}}</p>
+            <p>Número de questões acertadas: {{round.get_number_of_questions_answered_correctly}} de {{round.get_number_of_questions_answered}}</p>
+            <p>Número total de tentativas corretas: {{round.get_number_of_correct_tries}} de {{round.get_number_of_tries}} </p>
+            <p>-------------------------------------------------------------------------------</p>
+            <p></p>
+        {% endif %}
         <button class="nes-btn is-primary" onclick="document.getElementById('dialog-stats').close();">Confirmar</button>
     </dialog>
 

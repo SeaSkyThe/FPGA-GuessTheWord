@@ -6,11 +6,23 @@ from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
 
 def adjust_indexes(query):
     new_question_number = 1
-    for obj in query.order_by('id'):
-        new_obj = obj
-        obj.delete()
-        new_obj.number = new_question_number
-        new_obj.save()
+    for question in query.order_by('id'):
+        # Atualiza o numero da questao
+        question.number = new_question_number
+
+        # Atualiza o numero da questao em todos os objetos de player answer
+        player_answers = PlayerAnswer.objects.filter(round__subject=question.subject, question_number=question.number)
+        for answer in player_answers:
+            answer.question_number = new_question_number
+            answer.save()
+        
+        # Atualiza o current question dos rounds existentes que estão nessa questão:
+        player_rounds = Round.objects.filter(subject=question.subject, current_question=question.number)
+        for round in player_rounds:
+            round.current_question = new_question_number
+            round.save()
+
+        question.save()
         new_question_number = new_question_number + 1
 
 @admin.action(description='Ajustar numero das questões de Circuitos')
