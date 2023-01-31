@@ -465,3 +465,5 @@ Adição de estatísticas internas na página de administração (acertos/tentat
 **IMPORTANTE:** 
 
 A instância de banco de dados utilizadas é uma instância gratis do Render (https://render.com), possivelmente com o tempo de uso da aplicação essa instância execeda o limite de 1gb de dados. Uma solução temporária, é a cada turma que finalizar o jogo, o administrador deletar todas as instancias de Player pela tela de administração (isso deletará todos os Rounds de cada jogador e todas as PlayerAnswers).
+
+**VIDEO DEMONSTRATIVO**: https://youtu.be/OyVvaxRpPv4
