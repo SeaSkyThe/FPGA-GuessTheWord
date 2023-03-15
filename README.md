@@ -1,7 +1,9 @@
 
 # Guess the Word
 
-  
+## Para acessar
+
+https://guesstheword.onrender.com/
 
 ## Sobre
 
